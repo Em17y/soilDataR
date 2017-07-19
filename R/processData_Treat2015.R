@@ -1,6 +1,7 @@
 processData_Treat2015 <- function(dir='repoData/Treat_2015', verbose=FALSE){
 
   library(readxl)
+  library(plyr)
   dir <- '../soils-long-tail-recovery/repoData/Treat_2015'
 
   ##Read in meta info
@@ -18,7 +19,10 @@ processData_Treat2015 <- function(dir='repoData/Treat_2015', verbose=FALSE){
   siteCols <- unlist(plyr::llply(site.df[-1:-2,], function(xx){return(!all(is.na(xx)))}))
   site.header <- site.df[1:2, siteCols]
   site.df <- site.df[-1:-2, siteCols]
-
+  siteID<-site.df[,1]
+  siteID<-plyr::rename(siteID,c("site_name"="siteID"))
+  site.df<-cbind(siteID,site.df)
+  
   ##Read in profile level info
   profile.df <- readxl::read_excel(path=sprintf('%s/ISCNtemplate_Treat_peatProps_v2.xlsx', dir),
                                    sheet='profile')
